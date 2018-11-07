@@ -7,7 +7,9 @@ package com.klexos.samonte.intelligentexpense.ui.activeLists;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -48,6 +50,8 @@ public class AddListDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
 
     /**
@@ -102,7 +106,11 @@ public class AddListDialogFragment extends DialogFragment {
         // Get the string that the user entered into the EditText and make an object with it
         // We'll use "Anonymous Owner" for the owner because we don't have user accounts yet
         String userEnteredName = mEditTextListName.getText().toString();
-        String owner = "Anonymous Owner";
+
+
+        // Get owner email from shared preferences
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String owner = prefs.getString(Constants.KEY_SIGNUP_EMAIL, "");
 
         /**
          * If EditText input is not empty

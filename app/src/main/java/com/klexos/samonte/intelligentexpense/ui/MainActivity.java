@@ -3,50 +3,48 @@ package com.klexos.samonte.intelligentexpense.ui;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.klexos.samonte.intelligentexpense.R;
 import com.klexos.samonte.intelligentexpense.SelectDisplayFragment.DisplayContent;
 import com.klexos.samonte.intelligentexpense.SelectDisplayFragment.GeneralDisplayFragment;
 import com.klexos.samonte.intelligentexpense.SelectDisplayFragment.ListsDisplayTabsFragment;
 import com.klexos.samonte.intelligentexpense.ui.activeLists.AddListDialogFragment;
+import com.klexos.samonte.intelligentexpense.ui.login.CreateAccountActivity;
+import com.klexos.samonte.intelligentexpense.ui.login.LoginActivity;
+import com.klexos.samonte.intelligentexpense.utils.Constants;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        GeneralDisplayFragment.OnListFragmentInteractionListener {
+
+    FirebaseUser mUser;
+    private String mUID = "";
+    private String mUsername = "";
+    private String mEmail = "";
 
     public static int DisplayNumber = 0;
-
-    // This is for toast messages
-    public static Toast toast;
 
     // Fragments that are in my application
     private GeneralDisplayFragment[] GeneralFragments = new GeneralDisplayFragment[4];
     private ListsDisplayTabsFragment ListsDisplayFragment = new ListsDisplayTabsFragment();
-
-    // Toast message method
-    public static void displayToastMessage(Context context, String message) {
-        /**
-         * This checks to see if there's a toast message currently being displayed.
-         * If so the current toast is canceled.
-         */
-        if (toast != null) {
-            toast.cancel();
-        }
-
-        // This makes the new toast messages
-        toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-        toast.show();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +81,27 @@ public class MainActivity extends BaseActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // This is to get a Firebase User's profile
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        checkIfUserExits();
+
+        // This is to get a Firebase User's profile
+        if (mUser != null) {
+            // The user's ID, unique to the Firebase project. Do NOT use this value to
+            // authenticate with your backend server, if you have one. Use
+            // FirebaseUser.getToken() instead.
+            mUID = mUser.getUid();
+
+            // Name, email address, and profile photo Url
+            mUsername = mUser.getDisplayName();
+            mEmail = mUser.getEmail();
+
+            Log.v("User1 UID", mUID + "");
+            Log.v("User1 Name", mUsername + "");
+            Log.v("User1 email", mEmail + "");
+        }
     }
 
     @Override
@@ -112,6 +131,12 @@ public class MainActivity extends BaseActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_monthly) {
             displayToastMessage(this, "Monthly Selected");
+            return true;
+        } else if (id == R.id.action_sign_out) {
+            displayToastMessage(this, "Sign Out Selected");
+
+            signOutUser();
+
             return true;
         }
 
@@ -152,7 +177,8 @@ public class MainActivity extends BaseActivity {
             fragmentTransaction.replace(R.id.fragment_container, ListsDisplayFragment);
             fragmentTransaction.commit();
 
-            (MainActivity.this).setActionBarTitle(getResources().getString(R.string.nav_lists));
+            // Title is the user's first name + "Lists"
+            (MainActivity.this).setActionBarTitle(mUsername.substring(0, mUsername.indexOf(' ')) + "\'s " + getResources().getString(R.string.nav_lists));
         } else if (id == R.id.nav_share) {
 
             // this is to get the package name
@@ -174,7 +200,9 @@ public class MainActivity extends BaseActivity {
 
         } else if (id == R.id.nav_help_and_feedback) {
 
+
         } else if (id == R.id.nav_settings) {
+
 
         }
 
@@ -227,5 +255,36 @@ public class MainActivity extends BaseActivity {
         /* Create an instance of the dialog fragment and show it */
         DialogFragment dialog = AddListDialogFragment.newInstance();
         dialog.show(MainActivity.this.getFragmentManager(), "AddListDialogFragment");
+    }
+
+    private void checkIfUserExits(){
+        // if the user is not logged in then open the login screen
+        if (mUser == null) {
+            // open login activity
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        checkIfUserExits();
+    }
+
+    private void signOutUser (){
+        // sign out the current person
+        FirebaseAuth.getInstance().signOut();
+
+        // Erase User SharedPreference Values
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().remove(Constants.KEY_SIGNUP_EMAIL).apply();
+
+//        Log.v("HERE1", prefs.getString(Constants.KEY_SIGNUP_EMAIL, ""));
+
+        // open login activity
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 }

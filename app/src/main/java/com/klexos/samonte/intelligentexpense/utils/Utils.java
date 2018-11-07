@@ -6,6 +6,8 @@ package com.klexos.samonte.intelligentexpense.utils;
 
 import android.content.Context;
 
+import com.klexos.samonte.intelligentexpense.model.ShoppingList;
+
 import java.text.SimpleDateFormat;
 
 /**
@@ -24,6 +26,16 @@ public class Utils {
      */
     public Utils(Context con) {
         mContext = con;
+    }
+
+
+    /**
+     * Return true if currentUserEmail equals to shoppingList.owner()
+     * Return false otherwise
+     */
+    public static boolean checkIfOwner(ShoppingList shoppingList, String currentUserEmail) {
+        return (shoppingList.getOwner() != null &&
+                shoppingList.getOwner().equals(currentUserEmail));
     }
 
 }

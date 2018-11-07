@@ -2,7 +2,9 @@ package com.klexos.samonte.intelligentexpense.ui.activeListDetails;
 
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,6 +24,7 @@ import com.klexos.samonte.intelligentexpense.model.ShoppingList;
 import com.klexos.samonte.intelligentexpense.model.ShoppingListItem;
 import com.klexos.samonte.intelligentexpense.ui.BaseActivity;
 import com.klexos.samonte.intelligentexpense.utils.Constants;
+import com.klexos.samonte.intelligentexpense.utils.Utils;
 
 /**
  * Represents the details screen for the selected shopping list
@@ -34,6 +37,8 @@ public class ActiveListDetailsActivity extends BaseActivity {
     private String mListId;
     private ShoppingList mShoppingList;
     private ValueEventListener mActiveListRefListener;
+    /* Stores whether the current user is the owner */
+    private boolean mCurrentUserIsOwner = false;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -107,6 +112,12 @@ public class ActiveListDetailsActivity extends BaseActivity {
                  */
                 mActiveListItemAdapter.setShoppingList(mShoppingList);
 
+                // Erase User SharedPreference Values
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+                /* Check if the current user is owner */
+                mCurrentUserIsOwner = Utils.checkIfOwner(shoppingList, prefs.getString(Constants.KEY_SIGNUP_EMAIL, ""));
+
                 /* Calling invalidateOptionsMenu causes onCreateOptionsMenu to be called */
                 invalidateOptionsMenu();
 
@@ -163,9 +174,9 @@ public class ActiveListDetailsActivity extends BaseActivity {
         MenuItem archive = menu.findItem(R.id.action_archive);
 
         /* Only the edit and remove options are implemented */
-        remove.setVisible(true);
-        edit.setVisible(true);
-        share.setVisible(false);
+        remove.setVisible(mCurrentUserIsOwner);
+        edit.setVisible(mCurrentUserIsOwner);
+        share.setVisible(true);
         archive.setVisible(false);
 
         return true;
@@ -297,26 +308,6 @@ public class ActiveListDetailsActivity extends BaseActivity {
      * This method is called when user taps "Start/Stop shopping" button
      */
     public void toggleShopping(View view) {
-
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    @Override
-    public void onListFragmentInteraction(DisplayContent.DisplayItem item) {
 
     }
 }

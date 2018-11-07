@@ -41,6 +41,7 @@ public final class Constants {
     public static final String KEY_LIST_ID = "LIST_ID";
     public static final String KEY_LIST_ITEM_NAME = "ITEM_NAME";
     public static final String KEY_LIST_ITEM_ID = "LIST_ITEM_ID";
+    public static final String KEY_SIGNUP_EMAIL = "SIGNUP_EMAIL";
 
 
 }

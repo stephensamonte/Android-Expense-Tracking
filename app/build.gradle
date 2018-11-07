@@ -32,6 +32,16 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    // This is the Firebase sdk
+    compile 'com.firebase:firebase-client-android:2.4.0'
+
+    // This is for Firebase ListView UI and other UI
+    compile 'com.firebaseui:firebase-ui:0.2.2'
+
+    // This is for Firebase User Authentication
+    compile 'com.google.firebase:firebase-auth:10.0.1'
+
+    // This is other android stuff
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -39,11 +49,10 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.squareup.picasso:picasso:2.5.0'
+
+
     testCompile 'junit:junit:4.12'
-
-    // This is the Firebase sdk
-    compile 'com.firebase:firebase-client-android:2.5.2+'
-
-    // This is for Firebase ListView UI and other UI
-    compile 'com.firebaseui:firebase-ui:0.2.2'
 }
+
+
+apply plugin: 'com.google.gms.google-services'

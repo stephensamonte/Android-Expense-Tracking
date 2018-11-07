@@ -16,6 +16,7 @@ public class ShoppingList {
     private HashMap<String, Object> timestampLastChanged;
     private HashMap<String, Object> timestampCreated;
 
+    private boolean bought;
 
     /**
      * Required public constructor
@@ -38,6 +39,8 @@ public class ShoppingList {
         HashMap<String, Object> timestampNowObject = new HashMap<String, Object>();
         timestampNowObject.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
         this.timestampLastChanged = timestampNowObject;
+
+        this.bought = false;
     }
 
     public String getListName() {
@@ -65,6 +68,10 @@ public class ShoppingList {
     @JsonIgnore
     public long getTimestampCreatedLong() {
         return (long) timestampLastChanged.get(Constants.FIREBASE_PROPERTY_TIMESTAMP);
+    }
+
+    public boolean isBought() {
+        return bought;
     }
 
 }

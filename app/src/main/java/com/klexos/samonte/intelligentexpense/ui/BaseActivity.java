@@ -4,30 +4,81 @@ package com.klexos.samonte.intelligentexpense.ui;
  * Created by steph on 6/29/2017.
  */
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.klexos.samonte.intelligentexpense.R;
 import com.klexos.samonte.intelligentexpense.SelectDisplayFragment.GeneralDisplayFragment;
+import com.klexos.samonte.intelligentexpense.ui.login.CreateAccountActivity;
+import com.klexos.samonte.intelligentexpense.ui.login.LoginActivity;
 
 /**
  * BaseActivity class is used as a base class for all activities in the app
  * It implements GoogleApiClient callbacks to enable "Logout" in all activities
  * and defines variables that are being shared across all activities
  */
-public abstract class BaseActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
-        GeneralDisplayFragment.OnListFragmentInteractionListener {
+public abstract class BaseActivity extends AppCompatActivity {
+
+    // This is for toast messages
+    public static Toast toast;
+
+    private String TAG = "BaseActivity.java";
+
+    // This is for Firebase user authentication
+    public FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    // Toast message method
+    public static void displayToastMessage(Context context, String message) {
+        /**
+         * This checks to see if there's a toast message currently being displayed.
+         * If so the current toast is canceled.
+         */
+        if (toast != null) {
+            toast.cancel();
+        }
+
+        // This makes the new toast messages
+        toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+        toast.show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initializing FirebaseAuthen instance
+        mAuth = FirebaseAuth.getInstance();
+
+        // Initializing Firebase AuthStateListener. This is so that I can track
+        // whenever the user signs in or out
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+
+                }
+                // ...
+            }
+        };
     }
 
     @Override
@@ -58,15 +109,33 @@ public abstract class BaseActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    protected void initializeBackground(LinearLayout linearLayout) {
+//    protected void initializeBackground(LinearLayout linearLayout) {
+//
+//        /**
+//         * Set different background image for landscape and portrait layouts
+//         */
+//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            linearLayout.setBackgroundResource(R.drawable.background_loginscreen_land);
+//        } else {
+//            linearLayout.setBackgroundResource(R.drawable.background_loginscreen);
+//        }
+//    }
 
-        /**
-         * Set different background image for landscape and portrait layouts
-         */
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            linearLayout.setBackgroundResource(R.drawable.background_loginscreen_land);
-        } else {
-            linearLayout.setBackgroundResource(R.drawable.background_loginscreen);
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Attach FirebaseAuth listener instance
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Remove FirebaseAuth listener instance
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 }
