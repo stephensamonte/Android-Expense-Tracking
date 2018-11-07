@@ -257,8 +257,10 @@ public class MainActivity extends BaseActivity implements
 
 
         } else if (id == R.id.nav_settings) {
-
-
+            /**
+             * Open SettingsActivity with sort options when settings icon is clicked
+             */
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -6,7 +6,9 @@ package com.klexos.samonte.intelligentexpense.ui.activeLists;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +18,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.firebase.client.Firebase;
+import com.firebase.client.Query;
 import com.klexos.samonte.intelligentexpense.R;
 import com.klexos.samonte.intelligentexpense.model.ShoppingList;
+import com.klexos.samonte.intelligentexpense.ui.BaseActivity;
 import com.klexos.samonte.intelligentexpense.ui.activeListDetails.ActiveListDetailsActivity;
 import com.klexos.samonte.intelligentexpense.utils.Constants;
 
@@ -72,20 +76,20 @@ public class ShoppingListsFragment extends Fragment {
         /**
          * Create Firebase references
          */
-        Firebase activeListsRef = new Firebase(Constants.FIREBASE_URL_ACTIVE_LISTS);
+//        Firebase activeListsRef = new Firebase(Constants.FIREBASE_URL_ACTIVE_LISTS);
 
         /**
          * Create the adapter, giving it the activity, model class, layout for each row in
          * the list and finally, a reference to the Firebase location with the list data
          */
-        mActiveListAdapter = new ActiveListAdapter(getActivity(), ShoppingList.class,
-                R.layout.single_active_list, activeListsRef, mEncodedEmail);
+//        mActiveListAdapter = new ActiveListAdapter(getActivity(), ShoppingList.class,
+//                R.layout.single_active_list, activeListsRef, mEncodedEmail);
 
 
         /**
          * Set the adapter to the mListView
          */
-        mListView.setAdapter(mActiveListAdapter);
+//        mListView.setAdapter(mActiveListAdapter);
 
         /**
          * Set interactive bits, such as click events and adapters
@@ -115,11 +119,67 @@ public class ShoppingListsFragment extends Fragment {
     }
 
     /**
+     * Updates the order of mListView onResume to handle sortOrderChanges properly
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Getting sort selection from shared preferences. Sort selection can be configured in the settings activity
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrder = sharedPref.getString(Constants.KEY_PREF_SORT_ORDER_LISTS, Constants.ORDER_BY_KEY);
+
+        Query orderedActiveUserListsRef;
+
+        /**
+         * Create Firebase references (With user data mattering) this is the new one
+         */
+//        Firebase activeListsRef = new Firebase(Constants.FIREBASE_URL_USER_LISTS)
+//                .child(mEncodedEmail);
+
+        /**
+         * Create Firebase references
+         */
+        Firebase activeListsRef = new Firebase(Constants.FIREBASE_URL_ACTIVE_LISTS);
+
+        /**
+         * Sort active lists by "date created"
+         * if it's been selected in the SettingsActivity
+         */
+        if (sortOrder.equals(Constants.ORDER_BY_KEY)) {
+            orderedActiveUserListsRef = activeListsRef.orderByKey(); // Sort by time with firebase call
+        } else {
+
+            /**
+             * Sort active by lists by name or datelastChanged. Otherwise
+             * depending on what's been selected in SettingsActivity
+             */
+
+            orderedActiveUserListsRef = activeListsRef.orderByChild(sortOrder);
+        }
+
+        /**
+         * Create the adapter with selected sort order
+         */
+        mActiveListAdapter = new ActiveListAdapter(getActivity(), ShoppingList.class,
+                R.layout.single_active_list, orderedActiveUserListsRef,
+                mEncodedEmail);
+
+        /**
+         * Set the adapter to the mListView
+         */
+        mListView.setAdapter(mActiveListAdapter);
+    }
+
+    /**
      * Cleanup the adapter when activity is destroyed.
      */
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        BaseActivity.displayToastMessage(getContext(), "onDestroy Called");
+
         mActiveListAdapter.cleanup();
     }
 

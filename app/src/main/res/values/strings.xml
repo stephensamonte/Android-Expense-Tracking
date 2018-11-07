@@ -65,4 +65,28 @@
 
     <!-- Activity Titles  -->
     <string name="title_activity_create_account">Create Account</string>
+
+
+    <!-- == Settings Strings == -->
+    <!-- Activity Titles -->
+    <string name="action_settings">Settings</string>
+
+    <!-- Titles for Sort-->
+    <string name="pref_title_sort_lists">Lists ordering</string>
+
+    <!-- Preference Name -->
+    <string name="pref_name_sort_order_lists">pref_sort_order_lists</string>
+
+    <!-- Ordering Choices Labels : Lists -->
+    <string name="pref_sort_list_label_sortType">Order by</string>
+    <string name="pref_sort_list_label_publish_time_entry">Publish Time</string>
+    <string name="pref_sort_list_label_list_name_entry">List Name</string>
+    <string name="pref_sort_list_label_owner_entry">Owner Email</string>
+    <string name="pref_sort_list_label_most_recently_changed_entry">Most Recently Changed</string>
+
+    <!-- Values -->
+    <string name="sort_by_publish_time_value">orderByPushKey</string>
+    <string name="sort_by_list_name_value">listName</string>
+    <string name="sort_by_owner_value">owner</string>
+    <string name="sort_by_most_recently_changed_value">timestampLastChangedReverse/timestamp</string>
 </resources>
