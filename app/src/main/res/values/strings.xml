@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Intelligent Expense</string>
+    <string name="app_name">My Life</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -89,4 +89,18 @@
     <string name="sort_by_list_name_value">listName</string>
     <string name="sort_by_owner_value">owner</string>
     <string name="sort_by_most_recently_changed_value">timestampLastChangedReverse/timestamp</string>
+
+
+    <!-- == Sharing Strings == -->
+    <!-- Activity Titles -->
+    <string name="title_activity_share_list">Share List</string>
+    <string name="title_activity_add_friend">Add Friend</string>
+
+    <!-- Add a friend -->
+    <string name="hint_enter_friends_email">Enter your friend\'s email</string>
+    <string name="text_add_friend">Add New Friend</string>
+
+    <!-- Toast Errors -->
+    <string name="toast_is_already_your_friend">%s is already your friend!</string>
+    <string name="toast_you_cant_add_yourself">You can\'t add yourself as a friend.</string>
 </resources>

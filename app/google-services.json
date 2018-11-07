@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "439525610286",
-    "firebase_url": "https://intelligent-expense.firebaseio.com",
-    "project_id": "intelligent-expense",
-    "storage_bucket": "intelligent-expense.appspot.com"
+    "project_number": "83721510194",
+    "firebase_url": "https://my-life-tool.firebaseio.com",
+    "project_id": "my-life-tool",
+    "storage_bucket": "my-life-tool.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:439525610286:android:bc090392eda6430f",
+        "mobilesdk_app_id": "1:83721510194:android:7f358b876e14be7b",
         "android_client_info": {
-          "package_name": "com.klexos.samonte.intelligentexpense"
+          "package_name": "com.klexos.my.life"
         }
       },
       "oauth_client": [
         {
-          "client_id": "439525610286-mokfb2a7qoh0m585advh4ikuk84c18kv.apps.googleusercontent.com",
+          "client_id": "83721510194-ntvgt4kaif24h3lhpnu7k68m82pql6mc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.klexos.samonte.intelligentexpense",
+            "package_name": "com.klexos.my.life",
             "certificate_hash": "e9be726ec4b9a59eb2543626c87a10ebfe448b98"
           }
         },
         {
-          "client_id": "439525610286-co33rgqmlpga27djo9d4skfqs4j33kvl.apps.googleusercontent.com",
+          "client_id": "83721510194-aq226i06mn3rno1bn53o1p38qi3egcor.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBDhsW3bBLipN5D6_0rQC1C59cJ4Zb8wWA"
+          "current_key": "AIzaSyC6KJ1wtr0fw6C-WgehvWI8tW2c9BMYiWg"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "439525610286-co33rgqmlpga27djo9d4skfqs4j33kvl.apps.googleusercontent.com",
+              "client_id": "83721510194-aq226i06mn3rno1bn53o1p38qi3egcor.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

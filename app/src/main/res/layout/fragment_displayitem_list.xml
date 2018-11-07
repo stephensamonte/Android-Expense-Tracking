@@ -4,5 +4,5 @@
     android:name="app.com.klexos.aptitude.training.SelectPlaylistItemFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.klexos.samonte.intelligentexpense.SelectDisplayFragment.GeneralDisplayFragment"
+    tools:context="com.klexos.my.life.SelectDisplayFragment.GeneralDisplayFragment"
     tools:listitem="@layout/fragment_displayitem2" />
