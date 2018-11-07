@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <!-- This is used for text-->
+    <color name="grey">#EDEEEF</color>
     <color name="dark_grey">#AEAEAE</color>
     <color name="light_black">#747474</color>
     <color name="black">#616161</color>

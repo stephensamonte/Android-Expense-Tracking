@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "439525610286",
+    "firebase_url": "https://intelligent-expense.firebaseio.com",
+    "project_id": "intelligent-expense",
+    "storage_bucket": "intelligent-expense.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439525610286:android:bc090392eda6430f",
+        "android_client_info": {
+          "package_name": "com.klexos.samonte.intelligentexpense"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "439525610286-mokfb2a7qoh0m585advh4ikuk84c18kv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.klexos.samonte.intelligentexpense",
+            "certificate_hash": "e9be726ec4b9a59eb2543626c87a10ebfe448b98"
+          }
+        },
+        {
+          "client_id": "439525610286-co33rgqmlpga27djo9d4skfqs4j33kvl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDhsW3bBLipN5D6_0rQC1C59cJ4Zb8wWA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "439525610286-co33rgqmlpga27djo9d4skfqs4j33kvl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,8 +1,6 @@
 package com.klexos.samonte.intelligentexpense.SelectDisplayFragment;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.klexos.samonte.intelligentexpense.R;
-import com.klexos.samonte.intelligentexpense.activelist.ShoppingListsFragment;
+import com.klexos.samonte.intelligentexpense.ui.activeLists.ShoppingListsFragment;
 
 /**
  * Created by steph on 6/28/2017.
@@ -74,7 +72,7 @@ public class ListsDisplayTabsFragment extends Fragment {
                 return fragment;
             } else { // Personal List
 
-                ListsDisplayFragment fragment = new ListsDisplayFragment();
+                ShoppingListsFragment fragment = new ShoppingListsFragment();
                 return fragment;
             }
         }
@@ -94,5 +92,10 @@ public class ListsDisplayTabsFragment extends Fragment {
             } else
                 return "To Do";
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }

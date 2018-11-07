@@ -5,7 +5,6 @@ package com.klexos.samonte.intelligentexpense.SelectDisplayFragment;
  */
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.klexos.samonte.intelligentexpense.activeListDetails.ActiveListDetailsActivity;
 import com.klexos.samonte.intelligentexpense.R;
 
 import java.util.List;
@@ -47,8 +45,8 @@ class GeneralDisplayItemRecyclerViewAdapter extends
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, ActiveListDetailsActivity.class);
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, ActiveListDetailsActivity.class);
+//                    context.startActivity(intent);
                 }
             });
         } else {
@@ -77,7 +75,7 @@ class GeneralDisplayItemRecyclerViewAdapter extends
 
         holder.mContentView.setText(mValues.get(position).item_name);
 
-        if (position != 0){ // If not the 1st card open proper activity
+        if (position != 0) { // If not the 1st card open proper activity
             // what to do when an item is selected
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -90,11 +88,11 @@ class GeneralDisplayItemRecyclerViewAdapter extends
                         Context context = v.getContext();
 //
                         // this creates the youtube fragment in a separate activity
-                        Intent intent = new Intent(context, ActiveListDetailsActivity.class);
+//                        Intent intent = new Intent(context, ActiveListDetailsActivity.class);
 //                    intent.putExtra(YoutubeFragmentPlaylistView.ARG_Playlist, holder.mItem.playlist);
 //                    intent.putExtra(YoutubeFragmentPlaylistView.ARG_Name, holder.mItem.item_name);
 //                    //intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                        context.startActivity(intent);
+//                        context.startActivity(intent);
                     }
                 }
             });
@@ -159,8 +157,7 @@ class GeneralDisplayItemRecyclerViewAdapter extends
 
         if (position == 0) {
             return 0;
-        }
-        else {
+        } else {
             return 1;
         }
     }

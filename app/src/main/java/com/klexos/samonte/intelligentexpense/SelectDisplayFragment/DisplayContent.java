@@ -30,26 +30,25 @@ public class DisplayContent {
         // Add some display items.
         OVERVIEW.add(createDisplayItem("1", "Net Flow", R.drawable.side_nav_bar));
 
-        EXPENSES.add(createDisplayItem("1", "Summary", R.drawable.side_nav_bar));
-        EXPENSES.add(createDisplayItem("2", "House", R.drawable.ic_menu_camera));
-        EXPENSES.add(createDisplayItem("3", "Utilities", R.drawable.ic_menu_camera));
-        EXPENSES.add(createDisplayItem("4", "Food", R.drawable.ic_menu_camera));
-        EXPENSES.add(createDisplayItem("5", "Transportation", R.drawable.ic_menu_camera));
-        EXPENSES.add(createDisplayItem("6", "Goods", R.drawable.ic_menu_camera));
-        EXPENSES.add(createDisplayItem("7", "Other", R.drawable.ic_menu_camera));
+        EXPENSES.add(createDisplayItem("1", "Summary", R.drawable.ic_format_list_bulleted_black_24dp));
+        EXPENSES.add(createDisplayItem("2", "House", R.drawable.ic_menu_share));
+        EXPENSES.add(createDisplayItem("3", "Utilities", R.drawable.ic_account_balance_black_24dp));
+        EXPENSES.add(createDisplayItem("4", "Food", R.drawable.ic_help_black_24dp));
+        EXPENSES.add(createDisplayItem("5", "Transportation", R.drawable.ic_account_circle_black_24dp));
+        EXPENSES.add(createDisplayItem("6", "Goods", R.drawable.ic_format_list_bulleted_black_24dp));
+        EXPENSES.add(createDisplayItem("7", "Other", R.drawable.ic_menu_share));
 
         INCOME.add(createDisplayItem("1", "Summary", R.drawable.side_nav_bar));
-        INCOME.add(createDisplayItem("2", "Job", R.drawable.ic_menu_camera));
-        INCOME.add(createDisplayItem("3", "Other", R.drawable.ic_menu_camera));
+        INCOME.add(createDisplayItem("2", "Job", R.drawable.ic_format_list_bulleted_black_24dp));
+        INCOME.add(createDisplayItem("3", "Other", R.drawable.ic_format_list_bulleted_black_24dp));
 
         SAVINGS.add(createDisplayItem("1", "Summary", R.drawable.side_nav_bar));
-        SAVINGS.add(createDisplayItem("2", "Wallet", R.drawable.ic_menu_camera));
-        SAVINGS.add(createDisplayItem("3", "Bank Account", R.drawable.ic_menu_camera));
+        SAVINGS.add(createDisplayItem("2", "Wallet", R.drawable.ic_format_list_bulleted_black_24dp));
+        SAVINGS.add(createDisplayItem("3", "Bank Account", R.drawable.ic_format_list_bulleted_black_24dp));
 
         LISTS.add(createDisplayItem("1", "To Do List", R.drawable.side_nav_bar));
-        LISTS.add(createDisplayItem("2", "Shopping List", R.drawable.ic_menu_camera));
-        LISTS.add(createDisplayItem("3", "BPersonal List", R.drawable.ic_menu_camera));
-
+        LISTS.add(createDisplayItem("2", "Shopping List", R.drawable.ic_format_list_bulleted_black_24dp));
+        LISTS.add(createDisplayItem("3", "BPersonal List", R.drawable.ic_format_list_bulleted_black_24dp));
 
     }
 

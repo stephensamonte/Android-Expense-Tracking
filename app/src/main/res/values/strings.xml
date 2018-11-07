@@ -23,4 +23,31 @@
         https://play.google.com/store/apps/details?id=
     </string>
     <string name="title_activity_itemlist">ItemlistActivity</string>
+
+    <!-- Base Strings -->
+    <string name="remove_item_option">Remove Item</string>
+
+    <!-- Edit List and Add Item Dialogs -->
+    <string name="positive_button_add_list_item">Add item</string>
+    <string name="positive_button_edit_item">Edit name</string>
+    <string name="negative_button_cancel">Cancel</string>
+    <string name="dialog_message_are_you_sure_remove_list">Are you sure you want to remove this list?</string>
+    <string name="dialog_message_are_you_sure_remove_item">Are you sure you want to remove this item?</string>
+
+    <!-- Base Error Strings-->
+    <string name="log_error_updating_data">Error updating data: </string>
+    <string name="log_error_the_read_failed">The read failed: </string>
+
+    <!-- Menu Strings -->
+    <string name="action_share_list">Share List</string>
+    <string name="action_remove_list">Remove list</string>
+    <string name="action_archive">Archive</string>
+
+    <!-- List of Shopping Lists Strings -->
+    <string name="created_by">Created by </string>
+
+    <string name="bought_by">Bought by</string>
+
+    <!-- Menu Items -->
+    <string name="action_edit_list_name">Edit list name</string>
 </resources>

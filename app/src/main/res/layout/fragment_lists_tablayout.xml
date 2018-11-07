@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.klexos.samonte.intelligentexpense.MainActivity"
+    tools:context="com.klexos.samonte.intelligentexpense.ui.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
     <!--This is the tabs for the  part of the page adapter-->

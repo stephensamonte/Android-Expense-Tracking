@@ -14,8 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.klexos.samonte.intelligentexpense.MainActivity;
 import com.klexos.samonte.intelligentexpense.R;
+import com.klexos.samonte.intelligentexpense.ui.MainActivity;
 
 /**
  * A fragment representing a list of Items.
