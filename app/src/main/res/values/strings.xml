@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Intelligent Expense</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- MainActivity -->
+    <string name="nav_overview">Overview</string>
+    <string name="nav_expenses">Expenses</string>
+    <string name="nav_income">Income</string>
+    <string name="nav_savings">Savings</string>
+    <string name="nav_lists">Lists</string>
+    <string name="app_slogan">Money Saved is Money Earned.</string>
+
+    <!-- Action Bar Menu Options -->
+    <string name="action_monthly">Monthly</string>
+
+
+    <!--Share Application Strings-->
+    <string name="app_share_introduction">Check Out</string>
+    <string name="app_share_subject">Application:</string>
+    <string name="app_download_website" translatable="false">
+        https://play.google.com/store/apps/details?id=
+    </string>
+    <string name="title_activity_itemlist">ItemlistActivity</string>
+</resources>
