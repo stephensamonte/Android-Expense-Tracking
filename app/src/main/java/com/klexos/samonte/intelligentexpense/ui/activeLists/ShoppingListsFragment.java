@@ -8,6 +8,7 @@ package com.klexos.samonte.intelligentexpense.ui.activeLists;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.klexos.samonte.intelligentexpense.utils.Constants;
  * create an instance of this fragment.
  */
 public class ShoppingListsFragment extends Fragment {
+    private String mEncodedEmail;
     private ActiveListAdapter mActiveListAdapter;
     private ListView mListView;
 
@@ -38,9 +40,10 @@ public class ShoppingListsFragment extends Fragment {
      * Create fragment and pass bundle with data as it's arguments
      * Right now there are not arguments...but eventually there will be.
      */
-    public static ShoppingListsFragment newInstance() {
+    public static ShoppingListsFragment newInstance(String encodedEmail) {
         ShoppingListsFragment fragment = new ShoppingListsFragment();
         Bundle args = new Bundle();
+        args.putString(Constants.KEY_ENCODED_EMAIL, encodedEmail);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,6 +55,7 @@ public class ShoppingListsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mEncodedEmail = getArguments().getString(Constants.KEY_ENCODED_EMAIL);
         }
     }
 
@@ -75,7 +79,7 @@ public class ShoppingListsFragment extends Fragment {
          * the list and finally, a reference to the Firebase location with the list data
          */
         mActiveListAdapter = new ActiveListAdapter(getActivity(), ShoppingList.class,
-                R.layout.single_active_list, activeListsRef);
+                R.layout.single_active_list, activeListsRef, mEncodedEmail);
 
 
         /**
@@ -96,6 +100,9 @@ public class ShoppingListsFragment extends Fragment {
                      * ref and then grab the key.
                      */
                     String listId = mActiveListAdapter.getRef(position).getKey();
+
+                    Log.v("listID", listId + "");
+
                     intent.putExtra(Constants.KEY_LIST_ID, listId);
                     /* Starts an active showing the details for the selected list */
                     startActivity(intent);

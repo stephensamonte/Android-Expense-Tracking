@@ -10,6 +10,9 @@ package com.klexos.samonte.intelligentexpense.model;
 public class ShoppingListItem {
     private String itemName;
     private String owner;
+    private String boughtBy;
+    private boolean bought;
+
 
     /**
      * Required public constructor
@@ -22,13 +25,15 @@ public class ShoppingListItem {
      *
      * @param itemName
      */
-    public ShoppingListItem(String itemName) {
+    public ShoppingListItem(String itemName, String owner) {
         this.itemName = itemName;
         /**
          * This is a default value until we can differentiate users.
          * Which will be soon, I promise.
          */
-        this.owner = "Anonymous Owner";
+        this.owner = owner;
+        this.boughtBy = null;
+        this.bought = false;
     }
 
     public String getItemName() {
@@ -37,6 +42,14 @@ public class ShoppingListItem {
 
     public String getOwner() {
         return owner;
+    }
+
+    public boolean isBought() {
+        return bought;
+    }
+
+    public String getBoughtBy() {
+        return boughtBy;
     }
 
 }

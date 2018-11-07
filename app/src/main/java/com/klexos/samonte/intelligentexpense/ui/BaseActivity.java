@@ -6,23 +6,23 @@ package com.klexos.samonte.intelligentexpense.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.klexos.samonte.intelligentexpense.R;
-import com.klexos.samonte.intelligentexpense.SelectDisplayFragment.GeneralDisplayFragment;
 import com.klexos.samonte.intelligentexpense.ui.login.CreateAccountActivity;
 import com.klexos.samonte.intelligentexpense.ui.login.LoginActivity;
+import com.klexos.samonte.intelligentexpense.utils.Constants;
 
 /**
  * BaseActivity class is used as a base class for all activities in the app
@@ -36,8 +36,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private String TAG = "BaseActivity.java";
 
+    protected String mEncodedEmail;
+
     // This is for Firebase user authentication
-    public FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     // Toast message method
@@ -59,26 +61,43 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // FirebaseSDK set up
+        Firebase.setAndroidContext(this);
+
         // Initializing FirebaseAuthen instance
         mAuth = FirebaseAuth.getInstance();
 
-        // Initializing Firebase AuthStateListener. This is so that I can track
-        // whenever the user signs in or out
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
+        /**
+         * Getting mProvider and mEncodedEmail from SharedPreferences
+         */
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseActivity.this);
+        /* Get mEncodedEmail from SharedPreferences, use null as default value */
+        mEncodedEmail = sp.getString(Constants.KEY_ENCODED_EMAIL, null);
 
+        /**
+         * If not on login activity or create activity then listen for authentication change.
+         * If the user is signed out then open the login page
+          */
+        if (!((this instanceof LoginActivity) || (this instanceof CreateAccountActivity))) {
+            mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        // User is signed in
+                        Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    } else {
+                        // User is signed out
+                        Log.d(TAG, "onAuthState:signed_out");
+                        /* Clear out shared preferences */
+                        sp.edit().remove(Constants.KEY_ENCODED_EMAIL).apply();
+
+                        takeUserToLoginScreenOnUnAuth();
+                    }
+                    // ...
                 }
-                // ...
-            }
-        };
+            };
+        }
     }
 
     @Override
@@ -125,8 +144,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        // Attach FirebaseAuth listener instance
-        mAuth.addAuthStateListener(mAuthListener);
+        // If not on the LoginActivity or the CreateAccountActivity
+        if (!((this instanceof LoginActivity) || (this instanceof CreateAccountActivity))) {
+            // Attach FirebaseAuth listener instance
+            mAuth.addAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -137,5 +159,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    private void takeUserToLoginScreenOnUnAuth() {
+        /* Move user to LoginActivity, and remove the backstack */
+        Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

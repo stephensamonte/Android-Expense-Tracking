@@ -3,7 +3,6 @@ package com.klexos.samonte.intelligentexpense.ui.login;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -11,25 +10,25 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.klexos.samonte.intelligentexpense.ui.BaseActivity;
-
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.Map;
-
 import com.klexos.samonte.intelligentexpense.R;
-import com.klexos.samonte.intelligentexpense.ui.MainActivity;
+import com.klexos.samonte.intelligentexpense.model.User;
+import com.klexos.samonte.intelligentexpense.ui.BaseActivity;
 import com.klexos.samonte.intelligentexpense.utils.Constants;
+import com.klexos.samonte.intelligentexpense.utils.Utils;
+
+import java.util.HashMap;
 
 /**
  * Represents Sign up screen and functionality of the app
@@ -41,12 +40,15 @@ public class CreateAccountActivity extends BaseActivity {
     private EditText  mEditTextUsernameCreate, mEditTextEmailCreate, mEditTextPasswordCreate;
     private String mUsername, mUserEmail, mPassword;
 
-
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+
+        // Initialize firebase auth
+        mAuth = FirebaseAuth.getInstance();
 
         /**
          * Link layout elements from XML and setup the progress dialog
@@ -108,6 +110,12 @@ public class CreateAccountActivity extends BaseActivity {
                             Log.d(TAG, "signInWithEmail:success");
 
                             /**
+                             * Encode user email replacing "." with ","
+                             * to be able to use it as a Firebase db key
+                             */
+                            createUserInFirebaseHelper();
+
+                            /**
                              * Save name and email to sharedPreferences to create User database record
                              * when the registered user will sign in for the first time
                              */
@@ -133,7 +141,6 @@ public class CreateAccountActivity extends BaseActivity {
                         // ...
                     }
                 });
-
     }
 
     public void updateUserProfile(FirebaseUser user, String mUsername){
@@ -203,5 +210,39 @@ public class CreateAccountActivity extends BaseActivity {
                     }
                 });
     }
+
+    /**
+     * Creates a new user in Firebase from the Java POJO
+     */
+    private void createUserInFirebaseHelper() {
+        final String encodedEmail = Utils.encodeEmail(mUserEmail);
+        final Firebase userLocation = new Firebase(Constants.FIREBASE_URL_USERS).child(encodedEmail);
+        /**
+         * See if there is already a user (for example, if they already logged in with an associated
+         * Google account.
+         */
+        userLocation.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                /* If there is no user, make one */
+                if (dataSnapshot.getValue() == null) {
+                 /* Set raw version of date to the ServerValue.TIMESTAMP value and save into dateCreatedMap */
+                    HashMap<String, Object> timestampJoined = new HashMap<>();
+                    timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+                    User newUser = new User(mUsername, encodedEmail, timestampJoined);
+                    userLocation.setValue(newUser);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d(TAG, getString(R.string.log_error_occurred) + firebaseError.getMessage());
+            }
+        });
+    }
+
+
+
 
 }

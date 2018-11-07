@@ -1,7 +1,6 @@
 package com.klexos.samonte.intelligentexpense.ui;
 
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,30 +9,32 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.klexos.samonte.intelligentexpense.R;
 import com.klexos.samonte.intelligentexpense.SelectDisplayFragment.DisplayContent;
 import com.klexos.samonte.intelligentexpense.SelectDisplayFragment.GeneralDisplayFragment;
 import com.klexos.samonte.intelligentexpense.SelectDisplayFragment.ListsDisplayTabsFragment;
+import com.klexos.samonte.intelligentexpense.model.User;
 import com.klexos.samonte.intelligentexpense.ui.activeLists.AddListDialogFragment;
-import com.klexos.samonte.intelligentexpense.ui.login.CreateAccountActivity;
 import com.klexos.samonte.intelligentexpense.ui.login.LoginActivity;
 import com.klexos.samonte.intelligentexpense.utils.Constants;
 
 public class MainActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         GeneralDisplayFragment.OnListFragmentInteractionListener {
+
+    private String TAG = ("MainActivity");
 
     FirebaseUser mUser;
     private String mUID = "";
@@ -46,11 +47,13 @@ public class MainActivity extends BaseActivity implements
     private GeneralDisplayFragment[] GeneralFragments = new GeneralDisplayFragment[4];
     private ListsDisplayTabsFragment ListsDisplayFragment = new ListsDisplayTabsFragment();
 
+    private ValueEventListener mUserRefListener;
+    private Firebase mUserRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Firebase.setAndroidContext(this);
         // other setup code
 
         setContentView(R.layout.activity_main);
@@ -85,9 +88,9 @@ public class MainActivity extends BaseActivity implements
         // This is to get a Firebase User's profile
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        checkIfUserExits();
+//        checkIfUserExits();
 
-        // This is to get a Firebase User's profile
+        // This is to get a Firebase User's profile from firebase User authentication
         if (mUser != null) {
             // The user's ID, unique to the Firebase project. Do NOT use this value to
             // authenticate with your backend server, if you have one. Use
@@ -101,6 +104,41 @@ public class MainActivity extends BaseActivity implements
             Log.v("User1 UID", mUID + "");
             Log.v("User1 Name", mUsername + "");
             Log.v("User1 email", mEmail + "");
+        }
+
+        /**
+         * This is to get UserProfile from my firebase
+         * Create Firebase references
+         */
+        if (mEncodedEmail != null){
+            mUserRef = new Firebase(Constants.FIREBASE_URL_USERS).child(mEncodedEmail);
+
+            /**
+             * This is to get UserProfile from my firebase
+             * Add ValueEventListeners to Firebase references
+             * to control get data and control behavior and visibility of elements
+             */
+            mUserRefListener = mUserRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    User user = snapshot.getValue(User.class);
+
+                    /**
+                     * Set the activity title to current user name if user is not null
+                     */
+                    if (user != null) {
+                    /* Assumes that the first word in the user's name is the user's first name. */
+                        mUsername = user.getName();
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Log.e(TAG,
+                            getString(R.string.log_error_the_read_failed) +
+                                    firebaseError.getMessage());
+                }
+            });
         }
     }
 
@@ -172,13 +210,30 @@ public class MainActivity extends BaseActivity implements
         } else if (id == R.id.nav_lists) {
             DisplayNumber = 4; // This is not required or used
 
+            // Make a new fragment every time you return to the activity
+            ListsDisplayFragment = new ListsDisplayTabsFragment();
+
+            // Send Encoded String to the ListDisplayTabsFragment
+            Bundle bundle = new Bundle();
+            bundle.putString("encodedEmail", mEncodedEmail); // key value pair encoded email
+
+            // set Fragmentclass Arguments
+            ListsDisplayFragment.setArguments(bundle);
+
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, ListsDisplayFragment);
             fragmentTransaction.commit();
 
             // Title is the user's first name + "Lists"
-            (MainActivity.this).setActionBarTitle(mUsername.substring(0, mUsername.indexOf(' ')) + "\'s " + getResources().getString(R.string.nav_lists));
+            int indexOfSpace;
+            if (mUsername.indexOf(' ') != -1){ // if there is a " "
+                indexOfSpace = mUsername.indexOf(' ');
+            } else { // if there is no " "
+                indexOfSpace = mUsername.length() - 1;
+            }
+
+            (MainActivity.this).setActionBarTitle(mUsername.substring(0, indexOfSpace) + "\'s " + getResources().getString(R.string.nav_lists));
         } else if (id == R.id.nav_share) {
 
             // this is to get the package name
@@ -253,7 +308,7 @@ public class MainActivity extends BaseActivity implements
      */
     public void showAddListDialog(View view) {
         /* Create an instance of the dialog fragment and show it */
-        DialogFragment dialog = AddListDialogFragment.newInstance();
+        DialogFragment dialog = AddListDialogFragment.newInstance(mEncodedEmail);
         dialog.show(MainActivity.this.getFragmentManager(), "AddListDialogFragment");
     }
 

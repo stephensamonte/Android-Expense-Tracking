@@ -13,15 +13,19 @@ import android.view.ViewGroup;
 import com.klexos.samonte.intelligentexpense.R;
 import com.klexos.samonte.intelligentexpense.ui.activeLists.ShoppingListsFragment;
 
+
 /**
  * Created by steph on 6/28/2017.
  */
 
 public class ListsDisplayTabsFragment extends Fragment {
 
+    private String encodedEmail;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        encodedEmail = getArguments().getString("encodedEmail");
 
         // Inflate the tabLayout for the SingleTwitter fragments
         View inflatedView = inflater.inflate(R.layout.fragment_lists_tablayout, container, false);
@@ -68,13 +72,32 @@ public class ListsDisplayTabsFragment extends Fragment {
 
             if (position == 0) { // Shopping List
 
-                ShoppingListsFragment fragment = new ShoppingListsFragment();
+                ShoppingListsFragment fragment = ShoppingListsFragment.newInstance(encodedEmail);
                 return fragment;
             } else { // Personal List
 
-                ShoppingListsFragment fragment = new ShoppingListsFragment();
+                ShoppingListsFragment fragment = ShoppingListsFragment.newInstance(encodedEmail);
                 return fragment;
             }
+
+//            ShoppingListsFragment fragment = null;
+//
+//            /**
+//             * Set fragment to different fragments depending on position in ViewPager
+//             */
+//            switch (position) {
+//                case 0:
+//                    fragment = ShoppingListsFragment.newInstance(encodedEmail);
+//                    break;
+//                case 1:
+////                    fragment = MealsFragment.newInstance();
+//                    break;
+//                default:
+//                    fragment = ShoppingListsFragment.newInstance(encodedEmail);
+//                    break;
+//            }
+//
+//            return fragment;
         }
 
         /**

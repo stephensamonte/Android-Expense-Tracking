@@ -2,10 +2,7 @@ package com.klexos.samonte.intelligentexpense.ui.activeListDetails;
 
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -19,12 +16,13 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.klexos.samonte.intelligentexpense.R;
-import com.klexos.samonte.intelligentexpense.SelectDisplayFragment.DisplayContent;
 import com.klexos.samonte.intelligentexpense.model.ShoppingList;
 import com.klexos.samonte.intelligentexpense.model.ShoppingListItem;
 import com.klexos.samonte.intelligentexpense.ui.BaseActivity;
 import com.klexos.samonte.intelligentexpense.utils.Constants;
 import com.klexos.samonte.intelligentexpense.utils.Utils;
+
+import java.util.HashMap;
 
 /**
  * Represents the details screen for the selected shopping list
@@ -71,7 +69,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
          * Setup the adapter
          */
         mActiveListItemAdapter = new ActiveListItemAdapter(this, ShoppingListItem.class,
-                R.layout.single_active_list_item, listItemsRef, mListId);
+                R.layout.single_active_list_item, listItemsRef, mListId, mEncodedEmail);
         /* Create ActiveListItemAdapter and set to listView */
         mListView.setAdapter(mActiveListItemAdapter);
 
@@ -112,11 +110,8 @@ public class ActiveListDetailsActivity extends BaseActivity {
                  */
                 mActiveListItemAdapter.setShoppingList(mShoppingList);
 
-                // Erase User SharedPreference Values
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
                 /* Check if the current user is owner */
-                mCurrentUserIsOwner = Utils.checkIfOwner(shoppingList, prefs.getString(Constants.KEY_SIGNUP_EMAIL, ""));
+                mCurrentUserIsOwner = Utils.checkIfOwner(shoppingList, mEncodedEmail);
 
                 /* Calling invalidateOptionsMenu causes onCreateOptionsMenu to be called */
                 invalidateOptionsMenu();
@@ -148,6 +143,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
                     ShoppingListItem shoppingListItem = mActiveListItemAdapter.getItem(position);
 
                     if (shoppingListItem != null) {
+
                         String itemName = shoppingListItem.getItemName();
                         String itemId = mActiveListItemAdapter.getRef(position).getKey();
 
@@ -158,7 +154,53 @@ public class ActiveListDetailsActivity extends BaseActivity {
                 return false;
             }
         });
+
+        /* Perform buy/return action on listView item click event if current user is shopping. */
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /* Check that the view is not the empty footer item */
+                if (view.getId() != R.id.list_view_footer_empty) {
+                    final ShoppingListItem selectedListItem = mActiveListItemAdapter.getItem(position);
+                    String itemId = mActiveListItemAdapter.getRef(position).getKey();
+
+                    if (selectedListItem != null) {
+
+                        /* Create map and fill it in with deep path multi write operations list */
+                        HashMap<String, Object> updatedItemBoughtData = new HashMap<String, Object>();
+
+                        /* Buy selected item if it is NOT already bought */
+                        if (!selectedListItem.isBought()) {
+                            updatedItemBoughtData.put(Constants.FIREBASE_PROPERTY_BOUGHT, true);
+                            updatedItemBoughtData.put(Constants.FIREBASE_PROPERTY_BOUGHT_BY, mEncodedEmail);
+                        } else {
+                            /* Return selected item only if it was bought by current user or the user is the owner */
+                            if (selectedListItem.getBoughtBy().equals(mEncodedEmail) || mCurrentUserIsOwner) {
+                                updatedItemBoughtData.put(Constants.FIREBASE_PROPERTY_BOUGHT, false);
+                                updatedItemBoughtData.put(Constants.FIREBASE_PROPERTY_BOUGHT_BY, null);
+                            }
+                        }
+
+                        /* Do update */
+                        Firebase firebaseItemLocation = new Firebase(Constants.FIREBASE_URL_SHOPPING_LIST_ITEMS)
+                                .child(mListId).child(itemId);
+                        firebaseItemLocation.updateChildren(updatedItemBoughtData, new Firebase.CompletionListener() {
+                            @Override
+                            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                if (firebaseError != null) {
+                                    Log.d(LOG_TAG, getString(R.string.log_error_updating_data) +
+                                            firebaseError.getMessage());
+                                }
+                            }
+                        });
+
+                    }
+                }
+            }
+        });
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -277,7 +319,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
      */
     public void showAddListItemDialog(View view) {
         /* Create an instance of the dialog fragment and show it */
-        DialogFragment dialog = AddListItemDialogFragment.newInstance(mShoppingList, mListId);
+        DialogFragment dialog = AddListItemDialogFragment.newInstance(mShoppingList, mListId, mEncodedEmail);
         dialog.show(getFragmentManager(), "AddListItemDialogFragment");
     }
 
@@ -286,7 +328,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
      */
     public void showEditListNameDialog() {
         /* Create an instance of the dialog fragment and show it */
-        DialogFragment dialog = EditListNameDialogFragment.newInstance(mShoppingList, mListId);
+        DialogFragment dialog = EditListNameDialogFragment.newInstance(mShoppingList, mListId, mEncodedEmail);
         dialog.show(this.getFragmentManager(), "EditListNameDialogFragment");
     }
 
@@ -298,10 +340,10 @@ public class ActiveListDetailsActivity extends BaseActivity {
      */
     public void showEditListItemNameDialog(String itemName, String itemId) {
         /* Create an instance of the dialog fragment and show it */
-//        DialogFragment dialog = EditListItemNameDialogFragment.newInstance(mShoppingList, itemName,
-//                itemId, mListId);
+        DialogFragment dialog = EditListItemNameDialogFragment.newInstance(mShoppingList, itemName,
+                itemId, mListId, mEncodedEmail);
 
-//        dialog.show(this.getFragmentManager(), "EditListItemNameDialogFragment");
+        dialog.show(this.getFragmentManager(), "EditListItemNameDialogFragment");
     }
 
     /**

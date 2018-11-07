@@ -7,9 +7,7 @@ package com.klexos.samonte.intelligentexpense.ui.activeLists;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,15 +29,17 @@ import java.util.HashMap;
  * Adds a new shopping list
  */
 public class AddListDialogFragment extends DialogFragment {
+    String mEncodedEmail;
     EditText mEditTextListName;
 
     /**
      * Public static constructor that creates fragment and
      * passes a bundle with data into it when adapter is created
      */
-    public static AddListDialogFragment newInstance() {
+    public static AddListDialogFragment newInstance(String encodedEmail) {
         AddListDialogFragment addListDialogFragment = new AddListDialogFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(Constants.KEY_ENCODED_EMAIL, encodedEmail);
         addListDialogFragment.setArguments(bundle);
         return addListDialogFragment;
     }
@@ -51,6 +51,7 @@ public class AddListDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mEncodedEmail = getArguments().getString(Constants.KEY_ENCODED_EMAIL);
 
     }
 
@@ -107,11 +108,6 @@ public class AddListDialogFragment extends DialogFragment {
         // We'll use "Anonymous Owner" for the owner because we don't have user accounts yet
         String userEnteredName = mEditTextListName.getText().toString();
 
-
-        // Get owner email from shared preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String owner = prefs.getString(Constants.KEY_SIGNUP_EMAIL, "");
-
         /**
          * If EditText input is not empty
          */
@@ -134,7 +130,7 @@ public class AddListDialogFragment extends DialogFragment {
             timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
             /* Build the shopping list */
-            ShoppingList newShoppingList = new ShoppingList(userEnteredName, owner,
+            ShoppingList newShoppingList = new ShoppingList(userEnteredName, mEncodedEmail,
                     timestampCreated);
 
             /* Add the shopping list */
@@ -143,6 +139,5 @@ public class AddListDialogFragment extends DialogFragment {
             /* Close the dialog fragment */
             AddListDialogFragment.this.getDialog().cancel();
         }
-
     }
 }
